@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingkli Boja | Full Stack & ML</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="canvas-container"></div>
+<div id="command-palette" class="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-3xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500">
+    <div class="w-full max-w-3xl p-10">
+        <div class="text-[--accent] font-mono text-xs mb-4 animate-pulse">// NEURAL_QUERY_INITIATED...</div>
+        <input type="text" id="neural-input" placeholder="Type a command (e.g., 'show projects', 'contact', 'dark mode')..." 
+               class="w-full bg-transparent border-b-2 border-[--accent] py-4 text-4xl font-light outline-none text-white tracking-tighter">
+        <div id="neural-suggestions" class="mt-8 flex gap-4 text-[10px] uppercase tracking-widest opacity-40"></div>
+    </div>
+</div>
+    <nav class="flex justify-between items-center p-6 md:p-8 fixed w-full z-50 uppercase text-[10px] tracking-[0.4em] font-bold mix-blend-difference">
+        <div>Ingkli Boja // 2026</div>
+        <div class="flex items-center gap-6">
+            <button id="theme-toggle" class="hover:text-[--accent] transition-colors border-b border-white/20 pb-1 cursor-pointer">
+                Mode: <span id="mode-text">Dark</span>
+            </button>
+            <a href="mailto:inbogia@gmail.com" class="hover:text-[--accent] border-b border-white/20 pb-1">Contact</a>
+        </div>
+    </nav>
+<div id="neural-overlay" class="fixed pointer-events-none z-[100] opacity-0 transition-opacity duration-300">
+    <div class="relative">
+        <div class="w-48 h-48 border border-[--accent] opacity-20 absolute -top-24 -left-24 animate-pulse"></div>
+        
+        <div class="absolute top-4 left-4 font-mono text-[8px] uppercase tracking-tighter text-[--accent] leading-tight bg-black/50 p-2 backdrop-blur-md border-l-2 border-[--accent]">
+            <div>Status: <span class="animate-pulse">Analysing...</span></div>
+            <div>Latent_Vec: [<span id="data-x">0.00</span>, <span id="data-y">0.00</span>]</div>
+            <div>Confidence: <span id="data-conf">0.00</span>%</div>
+            <div class="mt-1 opacity-50">Cluster: 0xAF32</div>
+        </div>
+
+        <div class="w-48 h-[1px] bg-[--accent] absolute -top-12 -left-24 blur-[1px] animate-scan-fast"></div>
+    </div>
+</div>
+    <main class="relative z-10">
+        <div id="arch-wrapper" class="absolute top-0 right-0 w-full md:w-[40vw] h-screen pointer-events-none z-0 overflow-hidden opacity-40">
+            <img 
+                src="https://images.unsplash.com/photo-1508333706533-1ab43ecb1606?q=80&w=1500&auto=format&fit=crop" 
+                alt="Architectural Monolith" 
+                class="w-full h-full object-cover grayscale contrast-125 transition-all duration-1000"
+                id="hero-arch"
+            >
+            <div class="blueprint-grid absolute inset-0 opacity-10"></div>
+        </div>
+
+        <section class="min-h-screen flex flex-col justify-end p-6 md:p-20 pb-20">
+            <div class="reveal">
+                <p class="uppercase tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-xs mb-4 md:mb-6 accent-gradient font-bold">Full Stack Developer • ML Researcher</p>
+                <h1 class="poster-title">INGKLI<br>BOJA</h1>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mt-10 md:mt-16 gap-8 md:gap-12">
+                <p class="text-lg md:text-3xl font-light leading-tight max-w-2xl opacity-80">
+                    Building intelligent web systems at the intersection of <span class="font-bold">.NET</span> and <span class="font-bold">Computer Vision</span>.
+                </p>
+                <div class="text-left md:text-right w-full md:w-auto">
+                    <p class="text-[10px] uppercase opacity-40 tracking-widest mb-1 md:mb-2">Location</p>
+                    <p class="text-lg md:text-xl font-bold italic">Thessaloniki, GR</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ticker-section" class="py-12 md:py-20 transition-colors duration-500 bg-white text-black overflow-hidden whitespace-nowrap">
+            <div class="flex animate-scroll text-5xl md:text-8xl font-black uppercase tracking-tighter items-center gap-6 md:gap-10">
+                <span>ASP.NET</span> <span class="text-xl">✦</span>
+                <span>Python</span> <span class="text-xl">✦</span>
+                <span>Blazor</span> <span class="text-xl">✦</span>
+                <span>SQL</span> <span class="text-xl">✦</span>
+                <span>Agile</span> <span class="text-xl">✦</span>
+                <span>DevOps</span> <span class="text-xl">✦</span>
+                <span>ASP.NET</span> <span class="text-xl">✦</span>
+                <span>Python</span> <span class="text-xl">✦</span>
+                <span>Blazor</span> <span class="text-xl">✦</span>
+                <span>SQL</span> <span class="text-xl">✦</span>
+                <span>Agile</span> <span class="text-xl">✦</span>
+                <span>DevOps</span> <span class="text-xl">✦</span>
+            </div>
+        </section>
+
+        <section class="py-20 md:py-40 px-6 md:px-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
+                <div class="glass-card p-8 md:p-12 rounded-2xl md:rounded-3xl flex flex-col justify-between">
+                    <div class="h-64 bg-gradient-to-br from-gray-800 to-black relative overflow-hidden group">
+<img 
+            src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=1000&auto=format&fit=crop" 
+            alt="Medical Research Analysis" 
+            class="w-full h-full object-cover grayscale opacity-50 group-hover:opacity-100 transition-opacity duration-700"
+            style="filter: contrast(1.2);"
+        >    <canvas class="heatmap-canvas absolute inset-0 w-full h-full pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-60"></canvas>
+</div>
+                    <div>
+                        <div class="flex justify-between items-center mb-6 md:mb-8">
+                            <span class="bg-[--accent]/10 text-[--accent] px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase">Research</span>
+                            <span class="text-[10px] opacity-40 font-mono">NOV 2024</span>
+                        </div>
+                        <h3 class="text-3xl md:text-5xl font-black uppercase leading-[0.9] mb-4 md:mb-6">Diabetic Foot<br>Ulcer Detection</h3>
+                        <p class="text-base md:text-lg opacity-60 leading-relaxed">
+                            Lead research on Reverse Circular Logarithmic LBP at the **Machine Learning & Vision Group**.
+                        </p>
+                    </div>
+                    <div class="mt-8 md:mt-12 flex flex-wrap gap-2">
+                        <span class="text-[9px] border border-white/20 px-3 py-1 rounded-full uppercase">Python</span>
+                        <span class="text-[9px] border border-white/20 px-3 py-1 rounded-full uppercase">Computer Vision</span>
+                    </div>
+                </div>
+                <div class="glass-card p-8 md:p-12 rounded-2xl md:rounded-3xl flex flex-col justify-between">
+                    <div class="h-64 bg-gradient-to-br from-gray-800 to-black relative overflow-hidden group">
+    <div class="absolute inset-0 flex items-center justify-center opacity-20 text-8xl font-black uppercase"><img 
+    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" 
+    alt="Enterprise Data Flow" 
+    class="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-100 transition-all duration-700"
+></div>
+    <canvas class="heatmap-canvas absolute inset-0 w-full h-full pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-60"></canvas>
+        </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-6 md:mb-8">
+                            <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase">Full Stack</span>
+                            <span class="text-[10px] opacity-40 font-mono italic">2024 - PRESENT</span>
+                        </div>
+                        <h3 class="text-3xl md:text-5xl font-black uppercase leading-[0.9] mb-4 md:mb-6">Tantalus<br>Digital</h3>
+                        <p class="text-base md:text-lg opacity-60 leading-relaxed">
+                            Developing enterprise applications with **.NET (Blazor, C#)**. Specialized in **ETL** and **Data Warehousing**.
+                        </p>
+                    </div>
+                    <div class="mt-8 md:mt-12 flex flex-wrap gap-2">
+                        <span class="text-[9px] border border-white/20 px-3 py-1 rounded-full uppercase">.NET</span>
+                        <span class="text-[9px] border border-white/20 px-3 py-1 rounded-full uppercase">SQL</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 px-20">
+<h2 class="text-xs uppercase tracking-[0.5em] opacity-40 mb-12">
+GitHub Activity
+</h2>
+<span class="text-xs opacity-50">
+  Synced live from GitHub
+</span>
+<div id="github-projects" class="grid md:grid-cols-3 gap-6"></div>
+
+</section>
+<section class="py-20 px-6 md:px-20 relative overflow-hidden">
+    <h2 class="text-[10px] uppercase tracking-[0.5em] opacity-40 mb-12">Knowledge Graph // Latent Relations</h2>
+    <div id="skill-graph" class="w-full h-[500px] glass-card rounded-3xl relative cursor-crosshair overflow-hidden">
+        <canvas id="graph-canvas" class="absolute inset-0"></canvas>
+    </div>
+</section>
+<section class="py-40 text-center">
+
+ 
+<p class="opacity-60 mb-12">
+Full Stack • ML • Computer Vision
+</p>
+
+<div class="flex justify-center gap-6 flex-wrap">
+
+<a href="/Ingkli-Boja-CV.pdf"
+class="border px-8 py-4 uppercase text-sm hover:bg-white hover:text-black transition">
+Download CV
+</a>
+
+<a href="https://github.com/YOUR_USERNAME"
+target="_blank"
+class="border px-8 py-4 uppercase text-sm hover:bg-white hover:text-black transition">
+GitHub
+</a>
+
+<a href="https://linkedin.com/in/YOUR_PROFILE"
+target="_blank"
+class="border px-8 py-4 uppercase text-sm hover:bg-white hover:text-black transition">
+LinkedIn
+</a>
+
+<a href="mailto:inbogia@gmail.com"
+class="border px-8 py-4 uppercase text-sm hover:bg-white hover:text-black transition">
+Contact Me
+</a>
+
+</div>
+
+</section>
+        <footer class="min-h-[80vh] flex flex-col justify-center items-center text-center p-6 md:p-8">
+            <p class="text-[10px] uppercase tracking-[0.8em] mb-6 md:mb-8 opacity-40">Let's collaborate</p>
+            <a href="mailto:inbogia@gmail.com" class="text-3xl md:text-9xl font-black uppercase hover:text-[--accent] transition-all duration-500 break-all leading-none mb-12">
+                INBOGIA@GMAIL.COM
+            </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mt-12 md:mt-24 w-full max-w-4xl text-[10px] uppercase tracking-widest font-bold opacity-50">
+                <div>Phone<br><span class="text-xs md:text-sm tracking-normal">+30 6993701399</span></div>
+                <div>Education<br><span class="text-xs md:text-sm tracking-normal italic">CS, DUTH</span></div>
+                <div>Languages<br><span class="text-xs md:text-sm tracking-normal">EN / GR / AL</span></div>
+                <div>Socials<br><span class="text-xs md:text-sm tracking-normal">GitHub / LinkedIn</span></div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+<svg style="position: absolute; width: 0; height: 0;">
+  <filter id="neural-vision">
+    <feConvolveMatrix order="3" kernelMatrix="1 -1 1 -1 -0.1 -1 1 -1 1" />
+    <feColorMatrix type="matrix" values="0 1 0 0 0  0 1 0 0 0  0 1 0 0 0  0 0 0 1 0" />
+  </filter>
+</svg>
+
+

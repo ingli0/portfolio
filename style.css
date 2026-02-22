@@ -1,0 +1,167 @@
+:root { 
+    --accent: #ffffff; 
+    --bg-color: #050505;
+    --text-color: #fafafa;
+}
+
+[data-theme="light"] {
+    --accent: #0066ff;
+    --bg-color: #f0f0f0;
+    --text-color: #0a0a0a;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Space Grotesk', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.poster-title {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(3.5rem, 18vw, 11rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.5s ease;
+}
+
+[data-theme="light"] .glass-card {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 1024px) {
+    .glass-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-10px) scale(1.02);
+    }
+}
+
+#cursor-dot, #cursor-ring { 
+    display: none; 
+    position: fixed; 
+    pointer-events: none; 
+    z-index: 9999; 
+    border-radius: 50%; 
+}
+
+#cursor-dot { width: 8px; height: 8px; background: var(--accent); }
+#cursor-ring { width: 40px; height: 40px; border: 1px solid var(--accent); }
+
+@media (min-width: 1024px) {
+    #cursor-dot, #cursor-ring { display: block; }
+}
+
+.accent-gradient {
+    background: linear-gradient(to right, #ffffff, #0099ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.animate-scroll { display: inline-flex; will-change: transform; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+#hero-arch {
+    mix-blend-mode: lighten;
+    mask-image: linear-gradient(to left, black 20%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 20%, transparent 100%);
+}
+
+.blueprint-grid {
+    background-image: linear-gradient(#ffffff 1px, transparent 1px), 
+                      linear-gradient(90deg, #ffffff 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+
+@keyframes scan-fast {
+    0% { transform: translateY(-20px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(120px); opacity: 0; }
+}
+
+.animate-scan-fast {
+    animation: scan-fast 1.5s linear infinite;
+}
+
+#neural-overlay {
+    mix-blend-mode: screen;
+}
+
+[data-theme="light"] #neural-overlay {
+    mix-blend-mode: multiply;
+}
+
+#skill-graph {
+    width: 100%;
+    height: 60vh; 
+    min-height: 400px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#graph-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#arch-wrapper {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+#hero-arch {
+    transition: transform 0.1s ease-out;
+    will-change: transform, filter;
+}
+
+.grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Noise_Texture.png');
+    opacity: 0.03;
+    mix-blend-mode: overlay;
+}
+
+.reveal {
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), filter 0.8s ease;
+    will-change: transform, filter;
+}
+
+.scrolling-fast .reveal {
+    filter: blur(10px) brightness(1.5);
+    transform: skewY(2deg) scale(0.98);
+}
+
+#scroll-progress-ring {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    transform: rotate(-90deg);
+    z-index: 100;
+}
+
