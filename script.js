@@ -1,3 +1,4 @@
+// --- 1. DYNAMIC NEURAL PLEXUS (THREE.JS) ---
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -91,6 +92,7 @@ function animate() {
 }
 animate();
 
+// --- 2. THEME TOGGLE ---
 const themeBtn = document.getElementById('theme-toggle');
 const modeText = document.getElementById('mode-text');
 const ticker = document.getElementById('ticker-section');
@@ -120,6 +122,7 @@ themeBtn.addEventListener('click', () => {
     gsap.fromTo("main", { opacity: 0.5 }, { opacity: 1, duration: 0.4 });
 });
 
+// --- 3. CURSOR & GSAP ---
 const dot = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
 
@@ -172,6 +175,7 @@ function drawGraph(mousePos = { x: -1000, y: -1000 }) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     skills.forEach(skill => {
+        // Calculate "Gravitational Pull" toward mouse
         const dx = mousePos.x - skill.x;
         const dy = mousePos.y - skill.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
@@ -188,6 +192,7 @@ skill.related.forEach(relName => {
         const dist = Math.sqrt(dx*dx + dy*dy);
 
         ctx.beginPath();
+        // If mouse is near, lines glow with the accent color
         ctx.strokeStyle = dist < 150 ? 
             getComputedStyle(document.documentElement).getPropertyValue('--accent') : 
             'rgba(255,255,255,0.1)';
