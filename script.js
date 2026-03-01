@@ -399,19 +399,7 @@ window.addEventListener('scroll', () => {
     lastScrollY = window.scrollY;
 });
 
-
-gsap.to("#hero-arch", {
-    scrollTrigger: {
-        trigger: "body",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.5,
-    },
-  
-    scale: 1.5,
-    objectPosition: "50% 100%", 
-    filter: "grayscale(100%) contrast(120%) brightness(0.8) blur(0px)",
-});
+ 
 
 const addGrain = () => {
     const archWrapper = document.getElementById('arch-wrapper');

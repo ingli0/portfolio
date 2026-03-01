@@ -170,11 +170,9 @@ body {
 }
  
 
-/* Mobile fix */
-@media (max-width: 768px) {
+ @media (max-width: 768px) {
 
-  /* outer container */
-  .github-activity {
+   .github-activity {
     width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
