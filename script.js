@@ -171,53 +171,7 @@ const dataX = document.getElementById('data-x');
 const dataY = document.getElementById('data-y');
 const dataConf = document.getElementById('data-conf');
 
-function drawGraph(mousePos = { x: -1000, y: -1000 }) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    skills.forEach(skill => {
-        // Calculate "Gravitational Pull" toward mouse
-        const dx = mousePos.x - skill.x;
-        const dy = mousePos.y - skill.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        
-        const offsetX = dist < 200 ? dx * 0.1 : 0;
-        const offsetY = dist < 200 ? dy * 0.1 : 0;
-
-
-skill.related.forEach(relName => {
-    const rel = skills.find(s => s.name === relName);
-    if (rel) {
-        const dx = mousePos.x - skill.x;
-        const dy = mousePos.y - skill.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-
-        ctx.beginPath();
-        // If mouse is near, lines glow with the accent color
-        ctx.strokeStyle = dist < 150 ? 
-            getComputedStyle(document.documentElement).getPropertyValue('--accent') : 
-            'rgba(255,255,255,0.1)';
-        
-        ctx.globalAlpha = dist < 150 ? 0.6 : 0.1;
-        ctx.lineWidth = dist < 150 ? 2 : 1;
-        
-        ctx.moveTo(skill.x + offsetX, skill.y + offsetY);
-        ctx.lineTo(rel.x, rel.y);
-        ctx.stroke();
-    }
-});
-
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-        ctx.font = "bold 12px Space Grotesk";
-        ctx.fillText(skill.name, skill.x + offsetX + 10, skill.y + offsetY + 5);
-        
-        ctx.beginPath();
-        ctx.arc(skill.x + offsetX, skill.y + offsetY, 4, 0, Math.PI * 2);
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-        ctx.fill();
-    });
-}
-
+ 
 document.addEventListener('mousemove', (e) => {
     gsap.to(neuralOverlay, { x: e.clientX, y: e.clientY, duration: 0.1 });
     
@@ -419,10 +373,16 @@ initGraph();
 renderGraph();
 
 graphContainer.addEventListener('touchmove', (e) => {
-    const rect = graphContainer.getBoundingClientRect();
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
     const touch = e.touches[0];
-    drawGraph({ x: touch.clientX - rect.left, y: touch.clientY - rect.top });
-    e.preventDefault(); 
+
+    renderGraph({
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    });
+
 }, { passive: false });
 
 
@@ -675,29 +635,44 @@ fetch("https://api.github.com/users/ingli0/repos")
     const el = document.createElement("div");
     el.className = "glass-card p-6";
 
-    el.innerHTML = `
-      <h3 class="text-xl font-bold">${repo.name}</h3>
+ el.innerHTML = `
+      <div class="flex flex-col items-center text-center sm:text-left sm:items-start p-4">
+        <h3 class="text-xl font-bold">${repo.name}</h3>
 
-      <p class="opacity-50 text-sm">
-        ${repo.description}
-      </p>
+        <p class="opacity-50 text-sm mt-2">
+          ${repo.description || 'No description available'}
+        </p>
 
-      <div class="flex justify-between items-center mt-4">
-        <span class="text-xs opacity-60">
-          ⭐ ${repo.stargazers_count}
-        </span>
+        <div class="flex flex-col sm:flex-row justify-between items-center w-full mt-4 gap-3">
+          <span class="text-xs opacity-60">
+            ⭐ ${repo.stargazers_count}
+          </span>
 
-        <a href="${repo.html_url}" target="_blank"
-        class="text-xs inline-block border px-3 py-1">
-          View Repo
-        </a>
+          <a href="${repo.html_url}" target="_blank"
+          class="text-xs inline-block border px-3 py-1 hover:bg-white hover:text-black transition-colors">
+            View Repo
+          </a>
+        </div>
       </div>
     `;
-
     container.appendChild(el);
 
   });
 
 });
  
- 
+canvas.addEventListener('touchstart', handleTouch, { passive: false });
+canvas.addEventListener('touchmove', handleTouch, { passive: false });
+canvas.addEventListener('touchend', () => renderGraph(), { passive: true });
+
+function handleTouch(e) {
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+
+    renderGraph({
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    });
+}
