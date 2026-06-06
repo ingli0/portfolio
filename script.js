@@ -617,49 +617,6 @@ function activateGodMode() {
 }
 
 
-fetch("https://api.github.com/users/ingli0/repos")
-.then(res => res.json())
-.then(repos => {
-
-  const container = document.getElementById("github-projects");
-
-  const filtered = repos
-    .filter(repo => repo.description && repo.description.trim() !== "")
-
-    .sort((a, b) => b.stargazers_count - a.stargazers_count)
-
-    .slice(0, 3);
-
-  filtered.forEach(repo => {
-
-    const el = document.createElement("div");
-    el.className = "glass-card p-6 w-full";
-
- el.innerHTML = `
-      <div class="flex flex-col items-center text-center sm:text-left sm:items-start p-4">
-        <h3 class="text-xl font-bold">${repo.name}</h3>
-
-        <p class="opacity-50 text-sm mt-2">
-          ${repo.description || 'No description available'}
-        </p>
-
-        <div class="flex flex-col sm:flex-row justify-between items-center w-full mt-4 gap-3">
-          <span class="text-xs opacity-60">
-            ⭐ ${repo.stargazers_count}
-          </span>
-
-          <a href="${repo.html_url}" target="_blank"
-          class="text-xs inline-block border px-3 py-1 hover:bg-white hover:text-black transition-colors">
-            View Repo
-          </a>
-        </div>
-      </div>
-    `;
-    container.appendChild(el);
-
-  });
-
-});
  
 canvas.addEventListener('touchstart', handleTouch, { passive: false });
 canvas.addEventListener('touchmove', handleTouch, { passive: false });
