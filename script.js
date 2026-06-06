@@ -489,6 +489,18 @@ const enableTilt = () => {
     }
 };
 
+// Auto-start tilt on mobile: immediately on Android, on first touch on iOS
+if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        document.addEventListener('touchstart', function ios() {
+            document.removeEventListener('touchstart', ios);
+            enableTilt();
+        }, { once: true });
+    } else {
+        enableTilt();
+    }
+}
+
  
 
 
@@ -621,7 +633,7 @@ fetch("https://api.github.com/users/ingli0/repos")
   filtered.forEach(repo => {
 
     const el = document.createElement("div");
-    el.className = "glass-card p-6";
+    el.className = "glass-card p-6 w-full";
 
  el.innerHTML = `
       <div class="flex flex-col items-center text-center sm:text-left sm:items-start p-4">
