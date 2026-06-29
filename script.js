@@ -34,7 +34,8 @@ const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true
 
 camera.position.z = 600;
 
-let mouse = new THREE.Vector2(-100, -100);
+const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+let mouse = new THREE.Vector2(0, 0);
 window.addEventListener('mousemove', (e) => {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -83,9 +84,15 @@ function animate() {
     scene.add(lineSegments);
 
     starGeo.attributes.position.needsUpdate = true;
-    
-    camera.position.x += (mouse.x * 100 - camera.position.x) * 0.05;
-    camera.position.y += (mouse.y * 100 - camera.position.y) * 0.05;
+
+    if (isMobile) {
+        const t = Date.now() * 0.001;
+        camera.position.x += (Math.sin(t * 0.3) * 60 - camera.position.x) * 0.02;
+        camera.position.y += (Math.cos(t * 0.2) * 40 - camera.position.y) * 0.02;
+    } else {
+        camera.position.x += (mouse.x * 100 - camera.position.x) * 0.05;
+        camera.position.y += (mouse.y * 100 - camera.position.y) * 0.05;
+    }
     camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
@@ -414,8 +421,8 @@ const addGrain = () => {
 addGrain();
 
 document.addEventListener('mousemove', (e) => {
-    const xPct = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
-    const yPct = (e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+    const xPct = (e.clientX / window.innerWidth - 0.5) * 2;
+    const yPct = (e.clientY / window.innerHeight - 0.5) * 2;
 
     gsap.to("#hero-arch", {
         duration: 1.5,
@@ -426,12 +433,14 @@ document.addEventListener('mousemove', (e) => {
         ease: "power2.out"
     });
 
-    gsap.to(camera.position, {
-        duration: 2,
-        x: xPct * 100,
-        y: -yPct * 100,
-        ease: "power3.out"
-    });
+    if (!isMobile) {
+        gsap.to(camera.position, {
+            duration: 2,
+            x: xPct * 100,
+            y: -yPct * 100,
+            ease: "power3.out"
+        });
+    }
 });
 
 gsap.utils.toArray(".glass-card").forEach((card, i) => {
