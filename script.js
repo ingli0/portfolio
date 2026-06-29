@@ -1,13 +1,15 @@
+const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
 // --- 1. DYNAMIC NEURAL PLEXUS (THREE.JS) ---
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1 : 1.5));
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-const pointCount = 120;
+const pointCount = isMobile ? 60 : 120;
 const points = [];
 const velocities = [];
 const boundary = 400;
@@ -34,7 +36,6 @@ const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true
 
 camera.position.z = 600;
 
-const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
 let mouse = new THREE.Vector2(0, 0);
 window.addEventListener('mousemove', (e) => {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -443,20 +444,34 @@ document.addEventListener('mousemove', (e) => {
     }
 });
 
-gsap.utils.toArray(".glass-card").forEach((card, i) => {
-    gsap.from(card, {
-        scrollTrigger: {
-            trigger: card,
-            start: "top bottom",
-            end: "top center",
-            scrub: true
-        },
-        opacity: 0,
-        y: 100,
-        rotateX: -15,
-        scale: 0.9,
-        transformOrigin: "center top"
-    });
+gsap.utils.toArray(".glass-card").forEach((card) => {
+    if (isMobile) {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: "top bottom-=60",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            y: 40,
+            duration: 0.5,
+            ease: "power2.out"
+        });
+    } else {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: "top bottom",
+                end: "top center",
+                scrub: true
+            },
+            opacity: 0,
+            y: 100,
+            rotateX: -15,
+            scale: 0.9,
+            transformOrigin: "center top"
+        });
+    }
 });
 
 const archWrapper = document.getElementById('arch-wrapper');
